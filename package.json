@@ -1,0 +1,26 @@
+{
+  "name": "paperclip-plugin-superpowers",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "./dist/index.js",
+  "paperclipPlugin": {
+    "manifest": "./dist/manifest.js",
+    "worker": "./dist/worker.js",
+    "ui": "./dist/ui/"
+  },
+  "scripts": {
+    "prebuild": "node ../../../scripts/ensure-plugin-build-deps.mjs",
+    "build": "tsc && node ./scripts/build-ui.mjs",
+    "typecheck": "tsc --noEmit",
+    "dev": "tsc --watch"
+  },
+  "dependencies": {
+    "@paperclipai/plugin-sdk": "workspace:*",
+    "@paperclipai/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/react": "^19.0.8",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  }
+}
