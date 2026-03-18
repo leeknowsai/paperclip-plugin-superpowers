@@ -80,6 +80,47 @@ export function registerTools(ctx: PluginContext, store: SkillStore): void {
     },
   );
 
+  // logSkillExecution — log skill execution result to an issue document
+  ctx.tools.register(
+    "logSkillExecution",
+    {
+      displayName: "Log Skill Execution",
+      description: "Log the result of executing a skill to an issue document.",
+      parametersSchema: {
+        type: "object",
+        properties: {
+          issueId: { type: "string", description: "Issue ID to attach the log to" },
+          skillId: { type: "string", description: "Skill ID that was executed" },
+          companyId: { type: "string", description: "Company ID" },
+          summary: { type: "string", description: "Execution summary/output" },
+        },
+        required: ["issueId", "skillId", "companyId", "summary"],
+      },
+    },
+    async (params) => {
+      const p = params as Record<string, unknown>;
+      const issueId = String(p.issueId);
+      const skillId = String(p.skillId);
+      const companyId = String(p.companyId);
+      const summary = String(p.summary);
+
+      const skill = await store.getSkill(skillId);
+      const key = `skill-log-${skillId}`;
+
+      await ctx.issues.documents.upsert({
+        issueId,
+        key,
+        companyId,
+        title: `Skill Log: ${skill?.name ?? skillId}`,
+        body: `# ${skill?.name ?? skillId} Execution\n\n${summary}\n\n---\n*Logged at ${new Date().toISOString()}*`,
+        format: "markdown",
+        changeSummary: `Skill ${skillId} executed`,
+      });
+
+      return { content: `Logged ${skillId} execution to issue ${issueId}` };
+    },
+  );
+
   // getSkill — get full content of a specific skill
   ctx.tools.register(
     "getSkill",

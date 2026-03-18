@@ -110,6 +110,15 @@ const plugin = definePlugin({
       return { skillIds: assignment.skillIds, skills };
     });
 
+    // Data: get skill execution logs for an issue
+    ctx.data.register("getSkillLogs", async (params) => {
+      const p = params as Record<string, unknown>;
+      const issueId = String(p.issueId);
+      const companyId = String(p.companyId);
+      const docs = await ctx.issues.documents.list(issueId, companyId);
+      return docs.filter((d: { key: string }) => d.key.startsWith("skill-log-"));
+    });
+
     ctx.logger.info(`Superpowers plugin started (repo: ${repo})`);
   },
 

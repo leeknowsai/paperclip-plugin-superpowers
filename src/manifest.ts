@@ -19,6 +19,9 @@ const manifest: PaperclipPluginManifestV1 = {
     "instance.settings.register",
     "ui.page.register",
     "ui.detailTab.register",
+    "issue.documents.read",
+    "issue.documents.write",
+    "issues.read",
   ],
   entrypoints: {
     worker: "./dist/worker.js",
@@ -69,6 +72,21 @@ const manifest: PaperclipPluginManifestV1 = {
           id: { type: "string", description: "Skill ID (e.g. brainstorming, test-driven-development)" },
         },
         required: ["id"],
+      },
+    },
+    {
+      name: "logSkillExecution",
+      displayName: "Log Skill Execution",
+      description: "Log the result of executing a skill to an issue document.",
+      parametersSchema: {
+        type: "object",
+        properties: {
+          issueId: { type: "string", description: "Issue ID to attach the log to" },
+          skillId: { type: "string", description: "Skill ID that was executed" },
+          companyId: { type: "string", description: "Company ID" },
+          summary: { type: "string", description: "Execution summary/output" },
+        },
+        required: ["issueId", "skillId", "companyId", "summary"],
       },
     },
   ],
